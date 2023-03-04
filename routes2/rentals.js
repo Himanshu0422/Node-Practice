@@ -1,7 +1,6 @@
 const { Rental, schema } = require('../models/rental');
 const { Movie } = require('../models/movie');
 const { Customer } = require('../models/customer');
-const mongoose = require('mongoose');
 const Fawn = require("fawn");
 const express = require('express');
 const router = express.Router();
@@ -16,10 +15,6 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
 	const { error } = schema.validate(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
-
-	// if(mongoose.Types.ObjectId.isValid(req.body.customerId)){
-	// 	return res.status(400).send('Invalid Id');
-	// }
 	const customer = await Customer.findById(req.body.customerId);
 	if (!customer) return res.status(400).send('Invalid customer.');
 
@@ -45,18 +40,6 @@ router.post('/', async (req, res) => {
 	movie.numberInStock--;
 	movie.save();
 	res.send(rental);
-	// try {
-	// 	new Fawn.Task()
-	// 		.save('rentals', rental)
-	// 		.update('moives', { _id: movie._id }, {
-	// 			$inc: { numberInStock: -1 }
-	// 		})
-	// 		.run();
-	// 		res.send(rental);
-	// }catch{
-	// 	res.status(500).send('Something Failed');
-	// }
-
 });
 
 router.get('/:id', async (req, res) => {
